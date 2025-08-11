@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Сайт‑перехідник — чорно-білий макет</title>
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root{
+      --bg:#fff;
+      --fg:#0a0a0a;
+      --muted:#bdbdbd;
+      --line:#e5e5e5;
+      --accent:#111;       /* залишається монохромним */
+      --radius:14px;
+      --shadow: 0 6px 20px rgba(0,0,0,.08), 0 1px 0 rgba(0,0,0,.06);
+      --maxw: 1120px;
+      --gap: clamp(16px, 2vw, 28px);
+      --zoom: 1.035;       /* величина зуму при hover */
+      --img-h: clamp(180px, 36vw, 360px);
+      --img-h-small: clamp(140px, 28vw, 260px);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{ --bg:#0b0b0b; --fg:#f2f2f2; --line:#1c1c1c; --muted:#777; --accent:#f2f2f2; --shadow: none; }
+    }
+    *{ box-sizing:border-box }
+    html,body{ height:100% }
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      background:var(--bg); color:var(--fg); line-height:1.45;
+    }
+    a{ color:inherit; text-decoration:none }
+    .wrap{ max-width:var(--maxw); margin-inline:auto; padding: clamp(16px, 3vw, 32px) }
+
+    header{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding-block: 6px 14px; border-bottom:1px solid var(--line);
+    }
+    .brand{ display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.2px }
+    .brand__mark{ inline-size:32px; block-size:32px; border:2px solid var(--fg); border-radius:8px }
+    .muted{ color:var(--muted); font-size:.95rem }
+
+    /* ====== ГАЛЕРЕЯ: ДЕСКТОП (п'єдестал) ====== */
+    .gallery-desktop{
+      display:grid;
+      grid-template-columns: 1fr minmax(260px,1.15fr) 1fr;
+      align-items:end;
+      gap: var(--gap);
+      margin: clamp(22px, 4vw, 36px) 0;
+    }
+    .card{
+      position:relative; border:1px solid var(--line); border-radius:var(--radius);
+      overflow:clip; background:#fff; box-shadow: var(--shadow);
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+      will-change: transform; isolation:isolate;
+    }
+    .card:focus-within, .card:focus{ outline:2px solid currentColor; outline-offset:2px }
+    .card:hover{ transform: translateY(-2px) scale(var(--zoom)) }
+    .card--center{ transform: translateY(-6px) } /* легкий «п'єдестал» у 1-го місця */
+    .media{
+      display:block; inline-size:100%; block-size:var(--img-h); object-fit:cover;
+      background:#f3f3f3;
+    }
+    .media--small{ block-size:var(--img-h-small) }
+    .frame{
+      position:absolute; inset:8px; border:2px solid rgba(0,0,0,.75); border-radius:calc(var(--radius) - 6px);
+      pointer-events:none; mix-blend-mode:multiply;
+    }
+    @media (prefers-color-scheme: dark){
+      .frame{ border-color: rgba(255,255,255,.55) }
+      .card{ background:#0e0e0e }
+    }
+    .rank{
+      position:absolute; top:10px; left:10px;
+      background: var(--bg); color:var(--fg); border:1px solid var(--line);
+      border-radius:999px; font-size:.85rem; padding: 4px 10px;
+      box-shadow: var(--shadow);
+    }
+
+    /* ====== ГАЛЕРЕЯ: МОБІЛЬНА ====== */
+    .gallery-mobile{ display:none; margin: clamp(18px, 4vw, 28px) 0 }
+    .gallery-mobile__top{ max-width: 520px; margin-inline:auto }
+    .overlap-pair{
+      position:relative; max-width: 520px; margin: clamp(8px,2vw,14px) auto 0;
+      display:flex; justify-content:center; gap: clamp(10px, 5vw, 28px);
+      padding-block: clamp(6px,2vw,10px);
+    }
+    .overlap-pair .card{ inline-size: clamp(42%, 44vw, 240px); transform: translateY(-18px) }
+    .overlap-pair .card:nth-child(1){ transform: translate(-6px,-18px) rotate(-1.2deg) }
+    .overlap-pair .card:nth-child(2){ transform: translate(6px,-18px) rotate(1.2deg) }
+
+    /* ====== CTA БЛОКИ (кнопки) ====== */
+    .ctas{
+      display:grid; gap: var(--gap);
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      margin-block: clamp(18px, 5vw, 40px);
+    }
+    .cta{
+      display:flex; align-items:center; gap:12px;
+      border:1px dashed var(--line); border-radius:14px; padding:12px 14px;
+      transition: border-color .2s ease, transform .2s ease; background: transparent;
+    }
+    .cta:hover{ transform: translateY(-1px); border-color: var(--fg) }
+    .cta__thumb{
+      inline-size:46px; block-size:46px; border-radius:10px; overflow:hidden;
+      border:1px solid var(--line); flex:0 0 auto; background:#f3f3f3;
+      display:grid; place-items:center;
+    }
+    .cta__label{ font-weight:600 }
+    .cta:focus{ outline:2px solid currentColor; outline-offset:3px }
+
+    /* ====== РЕСПОНСИВ ====== */
+    @media (max-width: 860px){ .gallery-desktop{ grid-template-columns: 1fr 1fr 1fr } }
+    @media (max-width: 720px){
+      .gallery-desktop{ display:none }
+      .gallery-mobile{ display:block }
+      .ctas{ grid-template-columns: 1fr }
+    }
+
+    /* ====== ДРІБНИЦІ ДЛЯ UX ====== */
+    .visually-hidden{
+      position:absolute!important; clip:rect(1px,1px,1px,1px); clip-path:inset(50%);
+      height:1px;width:1px; overflow:hidden; white-space:nowrap; border:0; padding:0; margin:-1px;
+    }
+    @media (prefers-reduced-motion: reduce){
+      .card, .cta, .overlap-pair .card{ transition: none !important }
+      .card:hover{ transform:none }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="brand__mark" aria-hidden="true"></div>
+        <div>
+          Сайт‑перехідник
+          <div class="muted">Чорно-білий макет • адаптивно</div>
+        </div>
+      </div>
+      <div class="muted">v0 макет</div>
+    </header>
+
+    <!-- ===== ДЕСКТОПНА ГАЛЕРЕЯ (п'єдестал) ===== -->
+    <section class="gallery-desktop" aria-label="Три головні напрямки">
+      <!-- Друге місце -->
+      <a class="card" href="#2" aria-label="Перейти: Друге місце">
+        <img class="media media--small" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=" alt="Друге місце — прев'ю" />
+        <span class="frame" aria-hidden="true"></span>
+        <span class="rank">2</span>
+      </a>
+
+      <!-- Перше місце (центр) -->
+      <a class="card card--center" href="#1" aria-label="Перейти: Перше місце">
+        <img class="media" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=" alt="Перше місце — прев'ю" />
+        <span class="frame" aria-hidden="true"></span>
+        <span class="rank">1</span>
+      </a>
+
+      <!-- Третє місце -->
+      <a class="card" href="#3" aria-label="Перейти: Третє місце">
+        <img class="media media--small" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=" alt="Третє місце — прев'ю" />
+        <span class="frame" aria-hidden="true"></span>
+        <span class="rank">3</span>
+      </a>
+    </section>
+
+    <!-- ===== МОБІЛЬНА ВЕРСІЯ (центр + два нижче з накладанням) ===== -->
+    <section class="gallery-mobile" aria-label="Три напрямки — мобільне компонування">
+      <div class="gallery-mobile__top">
+        <a class="card" href="#1" aria-label="Перейти: Перше місце (мобільна версія)">
+          <img class="media" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=" alt="Перше місце — прев'ю" />
+          <span class="frame" aria-hidden="true"></span>
+          <span class="rank">1</span>
+        </a>
+      </div>
+      <div class="overlap-pair" aria-hidden="false">
+        <a class="card" href="#2" aria-label="Перейти: Друге місце (мобільна версія)">
+          <img class="media media--small" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=" alt="Друге місце — прев'ю" />
+          <span class="frame" aria-hidden="true"></span>
+          <span class="rank">2</span>
+        </a>
+        <a class="card" href="#3" aria-label="Перейти: Третє місце (мобільна версія)">
+          <img class="media media--small" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=" alt="Третє місце — прев'ю" />
+          <span class="frame" aria-hidden="true"></span>
+          <span class="rank">3</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== ТРИ КНОПКИ З ПІДПИСАМИ ===== -->
+    <nav class="ctas" aria-label="Швидкі переходи">
+      <a class="cta" href="#a">
+        <span class="cta__thumb" aria-hidden="true">
+          <!-- монохромний міні‑плейсхолдер -->
+          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+            <rect x="1" y="1" width="34" height="34" fill="#eee" stroke="#d9d9d9"></rect>
+            <path d="M6 24l6-7 6 5 5-6 7 8" stroke="#bbb" fill="none" stroke-width="2"/>
+          </svg>
+        </span>
+        <span class="cta__label">Підпис 1</span>
+        <span class="visually-hidden">— перейти за посиланням</span>
+      </a>
+
+      <a class="cta" href="#b">
+        <span class="cta__thumb" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+            <rect x="1" y="1" width="34" height="34" fill="#eee" stroke="#d9d9d9"></rect>
+            <path d="M6 24l6-7 6 5 5-6 7 8" stroke="#bbb" fill="none" stroke-width="2"/>
+          </svg>
+        </span>
+        <span class="cta__label">Підпис 2</span>
+        <span class="visually-hidden">— перейти за посиланням</span>
+      </a>
+
+      <a class="cta" href="#c">
+        <span class="cta__thumb" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+            <rect x="1" y="1" width="34" height="34" fill="#eee" stroke="#d9d9d9"></rect>
+            <path d="M6 24l6-7 6 5 5-6 7 8" stroke="#bbb" fill="none" stroke-width="2"/>
+          </svg>
+        </span>
+        <span class="cta__label">Підпис 3</span>
+        <span class="visually-hidden">— перейти за посиланням</span>
+      </a>
+    </nav>
+
+    <footer class="muted" style="border-top:1px solid var(--line); padding-top:14px; margin-top:10px">
+      Це чорно-білий макет. Далі замінимо посилання, зображення й додамо інфо‑блоки.
+    </footer>
+  </div>
+</body>
+</html>
