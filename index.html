@@ -1,29 +1,41 @@
 <!doctype html>
-<html lang="uk">
+<html lang="ru">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Публічна версія — мобільний фокус</title>
+  <title>Публичная версия • мобильная адаптация</title>
   <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#003399" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0f1726" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#003399">
+
+  <!-- Предзагрузка критичных мобильных изображений (замени пути при необходимости) -->
+  <link rel="preload" as="image" href="assets/img/dynastia.png" imagesizes="(max-width:760px) 100vw, 50vw">
+  <link rel="preload" as="image" href="assets/icons/dynastia-icon.png">
+  <link rel="preload" as="image" href="assets/icons/svitoglyad-icon.png">
+  <link rel="preload" as="image" href="assets/icons/craftorium-icon.png">
+
   <style>
-    /* ========= ТЕМА (UA palette + скло). ФОН ЗАЛИШАЄМО ЯК БУВ ========= */
+    /* ====== ТЕМА (UA palette + стекло). ФОН НЕ МЕНЯЕМ ====== */
     :root{
       --bg:#FFFDF9; --bg-soft:#FDF6E0; --paper:#FFFAE6;
-      --glass:#FFFFFF80; --glass-cold:#E6F0FF; --glass-plain:#F9F9F9;
+      --glass:#FFFFFF80; --glass-cold:#E6F0FF; --glass-plain:#F9F9F9; --neutral:#F2F2F2;
+
       --ua-blue:#003399; --ua-blue-strong:#0046CC; --ua-blue-deep:#0D47A1; --ua-blue-hover:#002B80;
       --ua-yellow:#F8E17C; --ua-yellow-2:#FFD966;
+
       --sky:#CCE6FF; --pastel:#FFF5CC;
+
       --fg:#1A1A1A; --muted:#667085; --line:#e7e3d9;
 
       --radius:16px; --radius-lg:22px;
       --shadow: 0 10px 30px rgba(0,0,0,.10), 0 1px 0 rgba(0,0,0,.06);
+      --maxw:1160px; --gap:clamp(14px,2.8vw,24px);
+      --zoom:1.03;
+      --touch:56px;
 
-      /* Мобільні значення за замовчуванням (mobile-first) */
-      --gap: clamp(12px, 3.5vw, 18px);
-      --header-h: 56px;
-      --touch: 56px;
+      --summary-fs: clamp(16px, 4.2vw, 18px);
+      --label-fs: clamp(13px, 3.6vw, 14px);
+      --icon: 22px;
+      --icon-lg: 24px;
     }
     @media (prefers-color-scheme: dark){
       :root{
@@ -33,42 +45,41 @@
       }
     }
 
-    /* ========= БАЗА ========= */
+    /* ====== СБРОС/БАЗА (mobile-first) ====== */
     *{ box-sizing:border-box }
     html,body{ height:100% }
-    html{ scroll-behavior:smooth }
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
       line-height:1.6;
-      /* Фон — без змін */
+      color:var(--fg);
       background:
         radial-gradient(160vw 90vh at 15% -10%, var(--sky) 0%, transparent 65%),
         radial-gradient(140vw 80vh at 85% -10%, var(--pastel) 0%, transparent 60%),
         linear-gradient(180deg, var(--bg) 0%, var(--paper) 100%);
       background-repeat:no-repeat;
-      color:var(--fg);
-      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-      -webkit-tap-highlight-color: transparent;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      -webkit-tap-highlight-color:transparent;
     }
-    a{ color:inherit; text-decoration:none; touch-action:manipulation }
-    img{ max-width:100%; display:block }
-    .wrap{ max-width:1160px; margin-inline:auto; padding: max(12px, env(safe-area-inset-top)) clamp(12px, 4vw, 18px) clamp(16px, 4vw, 22px) }
+    a{ color:inherit; text-decoration:none }
+    img{ max-width:100%; height:auto; display:block }
+    .wrap{ max-width:var(--maxw); margin-inline:auto; padding: clamp(12px, 4vw, 18px) }
+    .muted{ color:var(--muted) }
 
-    /* ========= ХЕДЕР (лише “скляний” бар, без написів) ========= */
+    /* ====== ШАПКА (оставляем стекло-эффект, но без текстов) ====== */
     header{
       position:sticky; top:0; z-index:50;
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      min-height: var(--header-h);
-      padding: 10px clamp(8px,2vw,14px);
-      margin: -8px -8px 12px;
+      padding: max(10px, env(safe-area-inset-top)) clamp(8px,3.5vw,14px);
+      margin: -8px -8px 10px;
       background: linear-gradient(180deg, var(--glass) 0%, transparent 100%);
       backdrop-filter: blur(10px) saturate(140%);
       border-bottom:1px solid var(--line);
+      min-height: 50px;
     }
-    .brand{ display:flex; align-items:center; gap:12px }
+    .brand{ display:flex; align-items:center; gap:10px }
     .brand__mark{
-      inline-size:36px; block-size:36px; border-radius:12px; flex:0 0 auto;
+      inline-size:34px; block-size:34px; border-radius:12px; flex:0 0 auto;
       background:linear-gradient(135deg, var(--ua-blue) 0%, var(--ua-blue-strong) 55%, var(--ua-blue-hover) 100%);
       position:relative; overflow:hidden; box-shadow: 0 6px 18px rgba(0,51,153,.25);
     }
@@ -77,117 +88,120 @@
       background: radial-gradient(50% 40% at 70% 10%, var(--ua-yellow) 0%, transparent 60%);
       opacity:.65; mix-blend-mode:screen;
     }
-    /* Повністю ховаємо будь-які тексти в хедері */
-    .brand > :not(.brand__mark), header > .muted{ display:none !important }
+    .brand > *:not(.brand__mark), header > .muted{ display:none !important }
 
-    /* ========= КАРТКИ (галерея) ========= */
+    /* ====== КАРТОЧКИ ====== */
     .card{
       position:relative; border:1px solid var(--line); border-radius:var(--radius-lg);
       overflow:hidden; background: var(--glass-plain); box-shadow: var(--shadow);
       backdrop-filter: blur(14px) saturate(140%);
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-      will-change: transform; isolation:isolate;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, filter .2s ease;
+      will-change:transform; isolation:isolate;
     }
-    .card:active{ transform: scale(.99) }
+    @media (hover:hover){
+      .card:hover{ transform: translateY(-2px) scale(var(--zoom)); box-shadow: 0 14px 40px rgba(0,0,0,.14) }
+    }
     .card:focus-visible{ outline:3px solid var(--ua-blue-strong); outline-offset:3px }
     .media{
       width:100%;
-      /* Мобільний формат — вертикальний */
-      aspect-ratio: 4/5;
+      aspect-ratio: 4/5;           /* Мобильный вертикальный формат */
       object-fit:cover; object-position:center;
       background:linear-gradient(180deg, var(--bg-soft), var(--paper));
-      content-visibility:auto; /* продуктивність на мобільних */
     }
     .frame{ position:absolute; inset:10px; border:1px solid rgba(0,0,0,.12); border-radius:calc(var(--radius-lg) - 8px); pointer-events:none; mix-blend-mode:multiply }
     @media (prefers-color-scheme: dark){ .frame{ border-color: rgba(255,255,255,.18) } .card{ background:var(--glass) } }
     .label{
-      position:absolute; left:12px; bottom:12px; right:12px;
+      position:absolute; left:12px; right:12px; bottom:12px;
       background: linear-gradient(180deg, var(--glass), var(--glass-cold));
       color: var(--ua-blue-deep);
-      border:1px solid var(--line); border-radius:12px; padding:10px 12px; font-weight:800;
+      border:1px solid var(--line); border-radius:12px; padding:8px 12px; font-weight:800;
+      font-size:var(--label-fs);
       backdrop-filter: blur(10px) saturate(140%); box-shadow: 0 6px 20px rgba(0,0,0,.10);
     }
 
-    /* ========= ГАЛЕРЕЯ: mobile-first ========= */
-    .gallery-mobile{ display:grid; gap:12px; margin: clamp(10px, 3.5vw, 18px) 0 }
+    /* ====== ГАЛЕРЕЯ: мобильная (вертикальный список) ====== */
+    .gallery-mobile{ margin: clamp(10px, 3.5vw, 18px) 0; }
+    .gallery-mobile__rail{ display:grid; grid-template-columns: 1fr; gap:12px }
+
+    /* ====== Десктопная галерея (скрыта на моб.) ====== */
     .gallery-desktop{ display:none }
 
-    /* ========= АКОРДЕОНИ ========= */
-    .accordion{ margin-block: clamp(10px, 3vw, 20px) }
+    /* ====== АККОРДЕОН ====== */
+    .accordion{ margin-block: clamp(12px, 4vw, 20px) }
     details{
       border:1px solid var(--line); border-radius:18px; background: linear-gradient(180deg, var(--glass), var(--glass-cold));
       backdrop-filter: blur(10px) saturate(140%); box-shadow: var(--shadow);
       overflow:hidden; transition: box-shadow .2s ease, border-color .2s ease; margin-bottom:12px;
-      scroll-margin-top: calc(var(--header-h) + 10px); /* щоб не закривався хедером при якорі */
+      scroll-margin-top: 76px; /* чтобы якорь не прятался под шапку */
+      content-visibility: auto; contain-intrinsic-size: 0 120px; /* экономим рендер */
     }
     details[open]{ box-shadow: 0 14px 36px rgba(0,0,0,.14); border-color:#d7c25a }
     summary{
-      list-style:none; cursor:pointer; user-select:none;
-      display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px;
-      min-height: var(--touch); padding: 14px 16px;
-      font-weight:800; letter-spacing:.2px; color:var(--ua-blue-deep);
-      touch-action:manipulation;
+      list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:12px;
+      min-height: var(--touch); padding: 14px 14px; font-weight:800; letter-spacing:.2px; color:var(--ua-blue-deep);
+      font-size: var(--summary-fs);
     }
     summary::-webkit-details-marker{ display:none }
-    .summary-left{ display:flex; align-items:center; gap:12px; min-width:0 }
+
+    .summary-left{ display:flex; align-items:center; gap:10px }
     .summary-icon{
-      inline-size:42px; block-size:42px; border-radius:12px; flex:0 0 auto;
-      background: linear-gradient(180deg, var(--ua-yellow), var(--ua-yellow-2));
-      border:1px solid #e8cc58; box-shadow: 0 8px 22px rgba(255,217,102,.30);
-      display:grid; place-items:center; overflow:hidden;
+      inline-size:40px; block-size:40px; border-radius:12px; display:grid; place-items:center; flex:0 0 auto;
+      background: linear-gradient(180deg, var(--ua-yellow), var(--ua-yellow-2)); border:1px solid #e8cc58;
+      box-shadow: 0 8px 22px rgba(255,217,102,.30);
     }
-    .summary-icon__img{
-      width:22px; height:22px; object-fit:contain; display:block; filter: drop-shadow(0 1px 2px rgba(0,0,0,.08));
+    /* МАЛЕНЬКИЕ ИКОНКИ ТЕПЕРЬ PNG, а не SVG */
+    .summary-img{
+      inline-size:var(--icon-lg); block-size:var(--icon-lg); object-fit:contain; border-radius:6px; user-select:none;
     }
-    .summary-title{ white-space:nowrap; text-overflow:ellipsis; overflow:hidden }
+
     .chev{
-      inline-size:24px; block-size:24px; flex:0 0 auto; transition: transform .25s ease;
+      inline-size:22px; block-size:22px; flex:0 0 auto; transition: transform .25s ease;
       filter: drop-shadow(0 2px 6px rgba(0,0,0,.12));
     }
     details[open] .chev{ transform: rotate(180deg) }
 
-    .panel{ padding: 0 16px 14px 16px; color:#1A1A1A }
+    .panel{ padding: 0 14px 14px 14px; color:#1A1A1A }
     .panel p{ margin: 10px 0 }
+
+    /* КНОПКА "Перейти" с PNG-иконкой */
     .actions{ display:none; margin-top:12px }
     details[open] .actions{ display:block }
-
-    /* Кнопка */
     .btn{
       appearance:none; border:1px solid var(--ua-blue-strong); background: var(--ua-blue-strong);
       color:#fff; padding:14px 18px; border-radius:14px; font-weight:800; cursor:pointer;
-      transition: transform .12s ease, filter .15s ease, background-color .2s ease, border-color .2s ease;
+      transition: transform .12s ease, background-color .2s ease, border-color .2s ease;
       text-align:center; display:inline-flex; align-items:center; justify-content:center; gap:10px;
       width:100%; line-height:1; touch-action:manipulation;
     }
-    .btn:active{ transform: scale(.99) }
+    @media (hover:hover){ .btn:hover{ transform: translateY(-1px) } }
+    .btn:active{ transform: translateY(0) scale(.99) }
     .btn:focus-visible{ outline:3px solid #d7c25a; outline-offset:3px }
     .btn__img{ inline-size:24px; block-size:24px; border-radius:6px; object-fit:cover; background:#fff3 }
 
-    /* ========= ДЕКОРАЦІЇ ========= */
+    /* ====== ДЕКОРАЦИИ ====== */
     .blob{ position:absolute; filter: blur(44px); opacity:.55; pointer-events:none }
-    .blob--blue{ width:420px; height:280px; right:-100px; top:-60px; background: radial-gradient(60% 60% at 60% 40%, #CCE6FF, transparent 65%) }
+    .blob--blue{ width:420px; height:280px; right:-100px; top:-60px; background: radial-gradient(60% 60% at 60% 40%, var(--sky), transparent 65%) }
     .blob--yellow{ width:380px; height:260px; left:-90px; top:120px; background: radial-gradient(60% 60% at 40% 60%, var(--ua-yellow-2), transparent 65%) }
 
-    /* ========= ДОП. НАЛАШТУВАННЯ ДЛЯ ДЕСКТОПУ ========= */
-    @media (min-width: 760px){
+    /* ====== ДЕСКТОП ДОБАВКИ ====== */
+    @media (min-width: 761px){
       .wrap{ padding: clamp(14px, 3.2vw, 32px) }
-      .media{ aspect-ratio: 16/9 }   /* на десктопі — горизонтальні прев’ю */
-      .gallery-mobile{ display:none }
+      .media{ aspect-ratio: 16/9 } /* на десктопе — ландшафт */
       .gallery-desktop{
         display:grid; grid-template-columns: 1fr minmax(280px,1.15fr) 1fr;
-        align-items:end; gap: clamp(16px,2vw,28px); margin: clamp(22px, 4vw, 36px) 0;
+        align-items:end; gap: var(--gap); margin: clamp(22px, 4vw, 36px) 0;
       }
       .gallery-desktop .card:nth-child(1){ margin-right:-8px }
       .gallery-desktop .card:nth-child(3){ margin-left:-8px }
+      .gallery-mobile{ display:none }
       .btn{ width:auto; padding:12px 16px; border-radius:12px }
       .btn__img{ inline-size:22px; block-size:22px }
     }
 
-    /* ========= A11y / UX ========= */
+    /* ====== A11y / предпочтения пользователя ====== */
     .visually-hidden{ position:absolute!important; clip:rect(1px,1px,1px,1px); clip-path:inset(50%); height:1px;width:1px; overflow:hidden; white-space:nowrap; border:0; padding:0; margin:-1px }
     @media (prefers-reduced-motion: reduce){
       .card, .btn, details, summary, .chev{ transition:none !important }
-      .card:active, .btn:active{ transform:none }
     }
   </style>
 </head>
@@ -196,7 +210,7 @@
     <div class="blob blob--blue" aria-hidden="true"></div>
     <div class="blob blob--yellow" aria-hidden="true"></div>
 
-    <!-- Скляний бар без текстів -->
+    <!-- Стеклянная шапка без текстов -->
     <header>
       <div class="brand" aria-label="Логотип">
         <div class="brand__mark" aria-hidden="true"></div>
@@ -204,55 +218,57 @@
       <div class="muted" aria-hidden="true"></div>
     </header>
 
-    <!-- ======== ГАЛЕРЕЯ (MOBILE-FIRST вертикальний список) ======== -->
-    <section class="gallery-mobile" aria-label="Три напрямки — мобільне компонування">
-      <a class="card" href="#dyn" aria-label="Перейти: Династія Слободенюк (мобільна)">
-        <img class="media" src="assets/img/dynastia.png" alt="Династія Слободенюк — прев'ю" loading="eager" decoding="async" fetchpriority="high" />
+    <!-- ===== DESKTOP: пьедестал (скрыт на мобиле) ===== -->
+    <section class="gallery-desktop" aria-label="Три направления">
+      <a class="card" href="#dyn" aria-label="Перейти: Династия Слободенюк">
+        <img class="media" src="assets/img/dynastia.png" alt="Династия Слободенюк — превью" loading="eager" decoding="async" fetchpriority="high" />
         <span class="frame" aria-hidden="true"></span>
-        <span class="label">Династія Слободенюк</span>
-      </a>
-      <a class="card" href="#svit" aria-label="Перейти: БО &quot;БФ Світогляд&quot; (мобільна)">
-        <img class="media" src="assets/img/svitoglyad.png" alt="БО &quot;БФ Світогляд&quot; — прев'ю" loading="lazy" decoding="async" />
-        <span class="frame" aria-hidden="true"></span>
-        <span class="label">БО "БФ Світогляд"</span>
-      </a>
-      <a class="card" href="#craft" aria-label="Перейти: Крафторіум (мобільна)">
-        <img class="media" src="assets/img/craftorium.png" alt="Крафторіум — прев'ю" loading="lazy" decoding="async" />
-        <span class="frame" aria-hidden="true"></span>
-        <span class="label">Крафторіум</span>
-      </a>
-    </section>
-
-    <!-- ======== ГАЛЕРЕЯ (DESKTOP п’єдестал) ======== -->
-    <section class="gallery-desktop" aria-label="Три головні напрямки">
-      <a class="card" href="#dyn" aria-label="Перейти: Династія Слободенюк">
-        <img class="media" src="assets/img/dynastia.png" alt="Династія Слободенюк — прев'ю" loading="eager" decoding="async" fetchpriority="high" />
-        <span class="frame" aria-hidden="true"></span>
-        <span class="label">Династія Слободенюк</span>
+        <span class="label">Династия Слободенюк</span>
       </a>
       <a class="card" href="#svit" aria-label="Перейти: БО &quot;БФ Світогляд&quot;">
-        <img class="media" src="assets/img/svitoglyad.png" alt="БО &quot;БФ Світогляд&quot; — прев'ю" loading="lazy" decoding="async" />
+        <img class="media" src="assets/img/svitoglyad.png" alt="БФ Світогляд — превью" loading="lazy" decoding="async" />
         <span class="frame" aria-hidden="true"></span>
         <span class="label">БО "БФ Світогляд"</span>
       </a>
       <a class="card" href="#craft" aria-label="Перейти: Крафторіум">
-        <img class="media" src="assets/img/craftorium.png" alt="Крафторіум — прев'ю" loading="lazy" decoding="async" />
+        <img class="media" src="assets/img/craftorium.png" alt="Крафторіум — превью" loading="lazy" decoding="async" />
         <span class="frame" aria-hidden="true"></span>
         <span class="label">Крафторіум</span>
       </a>
     </section>
 
-    <!-- ======== 3 КНОПКИ-АКОРДЕОНИ (малі ІКОНКИ — PNG ЗАМІСТЬ SVG) ======== -->
-    <section class="accordion" aria-label="Детальна інформація">
+    <!-- ===== MOBILE: вертикальный список ===== -->
+    <section class="gallery-mobile" aria-label="Три направления — мобильная компоновка">
+      <div class="gallery-mobile__rail">
+        <a class="card" href="#dyn" aria-label="Перейти: Династия Слободенюк (моб)">
+          <img class="media" src="assets/img/dynastia.png" alt="Династия Слободенюк — превью" loading="eager" decoding="async" fetchpriority="high" />
+          <span class="frame" aria-hidden="true"></span>
+          <span class="label">Династия Слободенюк</span>
+        </a>
+        <a class="card" href="#svit" aria-label="Перейти: БО &quot;БФ Світогляд&quot; (моб)">
+          <img class="media" src="assets/img/svitoglyad.png" alt="БФ Світогляд — превью" loading="lazy" decoding="async" />
+          <span class="frame" aria-hidden="true"></span>
+          <span class="label">БО "БФ Світогляд"</span>
+        </a>
+        <a class="card" href="#craft" aria-label="Перейти: Крафторіум (моб)">
+          <img class="media" src="assets/img/craftorium.png" alt="Крафторіум — превью" loading="lazy" decoding="async" />
+          <span class="frame" aria-hidden="true"></span>
+          <span class="label">Крафторіум</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== АККОРДЕОНЫ (иконки PNG вместо SVG) ===== -->
+    <section class="accordion" aria-label="Детальная информация">
 
       <!-- Dynastia -->
       <details id="dyn">
         <summary>
           <span class="summary-left">
             <span class="summary-icon" aria-hidden="true">
-              <img class="summary-icon__img" src="assets/icons/dynastia.png" alt="">
+              <img class="summary-img" src="assets/icons/dynastia-icon.png" alt="">
             </span>
-            <span class="summary-title">Династія Слободенюк</span>
+            Династия Слободенюк
           </span>
           <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
         </summary>
@@ -271,9 +287,9 @@
         <summary>
           <span class="summary-left">
             <span class="summary-icon" aria-hidden="true">
-              <img class="summary-icon__img" src="assets/icons/svitoglyad.png" alt="">
+              <img class="summary-img" src="assets/icons/svitoglyad-icon.png" alt="">
             </span>
-            <span class="summary-title">БО "БФ Світогляд"</span>
+            БО "БФ Світогляд"
           </span>
           <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
         </summary>
@@ -292,9 +308,9 @@
         <summary>
           <span class="summary-left">
             <span class="summary-icon" aria-hidden="true">
-              <img class="summary-icon__img" src="assets/icons/craftorium.png" alt="">
+              <img class="summary-img" src="assets/icons/craftorium-icon.png" alt="">
             </span>
-            <span class="summary-title">Крафторіум</span>
+            Крафторіум
           </span>
           <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
         </summary>
@@ -310,45 +326,44 @@
 
     </section>
 
-    <footer class="muted" style="border-top:1px solid var(--line); padding-top:14px; margin-top:10px">
-      Мобільна версія оптимізована: вертикальна галерея, великі тач-таргети, PNG-іконки в заголовках акордеонів, плавні якорі та scroll-margin, продуктивність (content-visibility), збережений фон і порядок блоків.
+    <footer class="muted" style="border-top:1px solid var(--line); padding-top:12px; margin-top:10px">
+      Мобільна версія оптимізована: вертикальні фото, великі тач-зони, PNG-іконки у заголовках, фон збережено без змін.
     </footer>
   </div>
 
-  <script defer>
-    // 1) Автопрокрутка та автовідкриття за якорем (клік із галереї)
+  <script>
+    // Автопрокрутка до відкритого акордеона за якорем (клік з галереї)
     (function(){
       if(location.hash){
         const el = document.querySelector(location.hash);
         if(el && el.tagName.toLowerCase()==='details'){
           el.setAttribute('open','');
-          // трошки зачекаємо, щоб layout устаканився на мобільному
-          requestAnimationFrame(()=> el.scrollIntoView({behavior:'smooth', block:'start'}));
+          el.scrollIntoView({behavior:'smooth', block:'start'});
         }
       }
     })();
 
-    // 2) A11y: aria-expanded + поведінка “лише один відкритий”
+    // A11y: aria-expanded + режим "тільки один відкритий"
     (function(){
       const items = document.querySelectorAll('.accordion details');
       items.forEach(dtl => {
         const sum = dtl.querySelector('summary');
-        if(!sum) return;
-        sum.setAttribute('role','button');
-        sum.setAttribute('aria-controls', dtl.id ? `panel-${dtl.id}` : '');
-        sum.setAttribute('aria-expanded', dtl.open ? 'true' : 'false');
-        dtl.addEventListener('toggle', () => {
-          sum.setAttribute('aria-expanded', dtl.open ? 'true' : 'false');
-          if(dtl.open){ items.forEach(other => { if(other!==dtl) other.removeAttribute('open'); }); }
-        });
+        if(sum){
+          sum.setAttribute('role','button');
+          sum.setAttribute('aria-expanded', dtl.hasAttribute('open') ? 'true' : 'false');
+          dtl.addEventListener('toggle', () => {
+            sum.setAttribute('aria-expanded', dtl.open ? 'true' : 'false');
+            if(dtl.open){ items.forEach(o => { if(o!==dtl) o.removeAttribute('open'); }); }
+          });
+        }
       });
     })();
 
-    // 3) Позначаємо завантажені прев’ю (зменшуємо CLS)
+    // Мікро-покращення CLS: позначаємо зображення завантаженими
     (function(){
       document.querySelectorAll('img.media').forEach(img=>{
-        if(img.complete){ img.dataset.ready = '1'; }
-        else{ img.addEventListener('load', ()=> img.dataset.ready='1', { once:true }); }
+        if(img.complete){ img.classList.add('is-ready'); }
+        else{ img.addEventListener('load', ()=> img.classList.add('is-ready'), { once:true }); }
       });
     })();
   </script>
