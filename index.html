@@ -2,22 +2,19 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
-  <title>Публічна мобільна версія</title>
-  <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#003399">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Публічна версія • Desktop & Mobile</title>
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#003399" />
 
-  <!-- Критичні зображення (PNG) -->
+  <!-- Критичні зображення -->
   <link rel="preload" as="image" href="assets/img/dynastia.png">
   <link rel="preload" as="image" href="assets/img/btn-dynastia.png">
   <link rel="preload" as="image" href="assets/img/btn-svitoglyad.png">
   <link rel="preload" as="image" href="assets/img/btn-craftorium.png">
 
   <style>
-    /* ====== ТЕМА (UA palette + скло). ФОН ЛИШАЄТЬСЯ, ЯК БУВ ====== */
+    /* ========= ТЕМА (UA palette + скло). ФОН — ЯК БУВ ========= */
     :root{
       --bg:#FFFDF9; --bg-soft:#FDF6E0; --paper:#FFFAE6;
       --glass:#FFFFFF80; --glass-cold:#E6F0FF; --glass-plain:#F9F9F9;
@@ -31,18 +28,10 @@
 
       --radius:16px; --radius-lg:22px;
       --shadow: 0 10px 30px rgba(0,0,0,.10), 0 1px 0 rgba(0,0,0,.06);
-
-      /* Максимальна ширина мобільної версії */
-      --maxw: 375px;
-
-      /* Розміри елементів */
-      --gap: 12px;
-      --touch: 56px;
-      --summary-fs: 16px;
-      --label-fs: 14px;
-
-      /* Висота картки розраховується JS з фото "Династія" */
-      --card-h: 320px; /* фолбек, поки не порахували */
+      --maxw:1160px;                 /* desktop контейнер */
+      --gap:clamp(16px,2vw,28px);
+      --touch:56px;
+      --zoom:1.03;
     }
     @media (prefers-color-scheme: dark){
       :root{
@@ -52,13 +41,12 @@
       }
     }
 
-    /* ====== БАЗА (mobile-first) ====== */
+    /* ========= БАЗА ========= */
     *{ box-sizing:border-box }
     html,body{ height:100% }
     body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
-      line-height:1.6; color:var(--fg);
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      color:var(--fg); line-height:1.6;
       background:
         radial-gradient(160vw 90vh at 15% -10%, var(--sky) 0%, transparent 65%),
         radial-gradient(140vw 80vh at 85% -10%, var(--pastel) 0%, transparent 60%),
@@ -70,75 +58,83 @@
     a{ color:inherit; text-decoration:none }
     img{ display:block; max-width:100%; height:auto }
 
-    .wrap{
-      max-width: var(--maxw);
-      margin-inline: auto;
-      padding: max(12px, env(safe-area-inset-top)) 14px 16px;
-    }
+    .wrap{ max-width:var(--maxw); margin-inline:auto; padding: clamp(14px, 3.2vw, 32px) }
     .muted{ color:var(--muted) }
 
-    /* ====== ШАПКА (скло, без написів) ====== */
+    /* ========= ШАПКА (скло, без написів) ========= */
     header{
       position:sticky; top:0; z-index:50;
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding: max(10px, env(safe-area-inset-top)) 10px;
-      margin: 0 -10px 10px;
+      padding: max(10px, env(safe-area-inset-top)) clamp(8px,2vw,14px);
+      margin: -8px -8px 12px;
       background: linear-gradient(180deg, var(--glass) 0%, transparent 100%);
       backdrop-filter: blur(10px) saturate(140%);
       border-bottom:1px solid var(--line);
-      min-height: 50px;
+      min-height: 52px;
     }
-    .brand{ display:flex; align-items:center; gap:10px }
+    .brand{ display:flex; align-items:center; gap:12px }
     .brand__mark{
-      inline-size:32px; block-size:32px; border-radius:12px; flex:0 0 auto;
+      inline-size:36px; block-size:36px; border-radius:12px; flex:0 0 auto;
       background:linear-gradient(135deg, var(--ua-blue) 0%, var(--ua-blue-strong) 55%, var(--ua-blue-hover) 100%);
       position:relative; overflow:hidden; box-shadow: 0 6px 18px rgba(0,51,153,.25);
     }
     .brand__mark:after{
       content:""; position:absolute; inset:-30% -20% auto auto; width:120%; height:120%; transform:rotate(18deg);
-      background: radial-gradient(50% 40% at 70% 10%, var(--ua-yellow) 0%, transparent 60%); opacity:.65; mix-blend-mode:screen;
+      background: radial-gradient(50% 40% at 70% 10%, var(--ua-yellow) 0%, transparent 60%);
+      opacity:.65; mix-blend-mode:screen;
     }
+    /* Ховаємо тексти хедера повністю */
     .brand > *:not(.brand__mark), header > .muted{ display:none !important }
 
-    /* ====== КАРТКИ ГАЛЕРЕЇ (одноколонка, спільний розмір) ====== */
-    .gallery{ margin: 12px 0 6px }
-    .cards{ display:grid; grid-template-columns: 1fr; gap: var(--gap) }
-
+    /* ========= КАРТКИ ========= */
     .card{
       position:relative; border:1px solid var(--line); border-radius:var(--radius-lg);
       overflow:hidden; background: var(--glass-plain); box-shadow: var(--shadow);
       backdrop-filter: blur(14px) saturate(140%);
-      transition: transform .18s ease, box-shadow .18s ease;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, filter .2s ease;
       will-change: transform; isolation:isolate;
     }
-    @media (hover:hover){
-      .card:hover{ transform: translateY(-2px); box-shadow: 0 14px 40px rgba(0,0,0,.14) }
-    }
+    @media (hover:hover){ .card:hover{ transform: translateY(-2px) scale(var(--zoom)); box-shadow: 0 14px 40px rgba(0,0,0,.14) } }
     .card:focus-visible{ outline:3px solid var(--ua-blue-strong); outline-offset:3px }
 
-    /* ЄДИНИЙ розмір прямокутника під фото — на основі висоти фото "Династія" */
+    /* ВАЖЛИВО: ПОВЕРНУЛИ первинні розміри зображень — 16:9 всюди */
     .media{
       width:100%;
-      height: var(--card-h);
-      object-fit: contain;           /* без обрізки, щоб “відповідало фото” */
-      object-position: center;
+      aspect-ratio: 16/9;           /* як у вихідній версії */
+      object-fit: cover;            /* заповнюємо прямокутник */
+      object-position:center;
       background: linear-gradient(180deg, var(--bg-soft), var(--paper));
     }
+    /* ЛИШЕ для «Династії»: помістити вертикальне фото в той самий прямокутник, без обрізання */
+    .media--contain{ object-fit: contain; background: linear-gradient(180deg, var(--bg-soft), var(--paper)) }
+
     .frame{ position:absolute; inset:10px; border:1px solid rgba(0,0,0,.12); border-radius:calc(var(--radius-lg) - 8px); pointer-events:none; mix-blend-mode:multiply }
-    @media (prefers-color-scheme: dark){
-      .frame{ border-color: rgba(255,255,255,.18) } .card{ background:var(--glass) }
-    }
+    @media (prefers-color-scheme: dark){ .frame{ border-color: rgba(255,255,255,.18) } .card{ background:var(--glass) } }
+
     .label{
-      position:absolute; left:12px; right:12px; bottom:12px;
+      position:absolute; left:12px; bottom:12px; right:12px;
       background: linear-gradient(180deg, var(--glass), var(--glass-cold));
       color: var(--ua-blue-deep);
-      border:1px solid var(--line); border-radius:12px; padding:8px 12px;
-      font-weight:800; font-size:var(--label-fs);
+      border:1px solid var(--line); border-radius:12px; padding:8px 12px; font-weight:800;
       backdrop-filter: blur(10px) saturate(140%); box-shadow: 0 6px 20px rgba(0,0,0,.10);
+      font-size: clamp(13px, .95vw + 10px, 15px);
     }
 
-    /* ====== АКОРДЕОНИ (іконка = PNG кнопки) ====== */
-    .accordion{ margin: 10px 0 6px }
+    /* ========= ГАЛЕРЕЯ DESKTOP (п'єдестал) ========= */
+    .gallery-desktop{
+      display:grid; grid-template-columns: 1fr minmax(280px,1.15fr) 1fr;
+      align-items:end; gap: var(--gap); margin: clamp(22px, 4vw, 36px) 0;
+    }
+    .gallery-desktop .card:nth-child(1){ margin-right:-8px }
+    .gallery-desktop .card:nth-child(3){ margin-left:-8px }
+
+    /* ========= МОБІЛЬНА ГАЛЕРЕЯ — вертикальний список ========= */
+    .gallery-mobile{ display:none; margin: clamp(12px, 3.5vw, 20px) 0 }
+    .gallery-mobile__rail{ display:grid; grid-template-columns: 1fr; gap:12px }
+    .gallery-mobile__rail > .card{ width:100% }
+
+    /* ========= АКОРДЕОНИ ========= */
+    .accordion{ margin-block: clamp(10px, 3vw, 20px) }
     details{
       border:1px solid var(--line); border-radius:18px; background: linear-gradient(180deg, var(--glass), var(--glass-cold));
       backdrop-filter: blur(10px) saturate(140%); box-shadow: var(--shadow);
@@ -149,8 +145,8 @@
     details[open]{ box-shadow: 0 14px 36px rgba(0,0,0,.14); border-color:#d7c25a }
     summary{
       list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:12px;
-      min-height: var(--touch); padding: 14px 14px; font-weight:800; letter-spacing:.2px; color:var(--ua-blue-deep);
-      font-size: var(--summary-fs);
+      min-height: var(--touch); padding: 14px 18px; font-weight:800; letter-spacing:.2px; color:var(--ua-blue-deep);
+      font-size: clamp(16px, 1.1vw + 12px, 18px);
     }
     summary::-webkit-details-marker{ display:none }
 
@@ -160,41 +156,49 @@
       background: linear-gradient(180deg, var(--ua-yellow), var(--ua-yellow-2)); border:1px solid #e8cc58;
       box-shadow: 0 8px 22px rgba(255,217,102,.30);
     }
-    .summary-icon__img{
-      inline-size:24px; block-size:24px; object-fit:contain; border-radius:4px; user-select:none;
-    }
+    /* МАЛЕНЬКІ ІКОНКИ = PNG кнопок */
+    .summary-icon__img{ inline-size:22px; block-size:22px; object-fit:contain; border-radius:4px; user-select:none }
+
     .chev{
       inline-size:22px; block-size:22px; flex:0 0 auto; transition: transform .25s ease;
       filter: drop-shadow(0 2px 6px rgba(0,0,0,.12));
     }
     details[open] .chev{ transform: rotate(180deg) }
 
-    .panel{ padding: 0 14px 14px 14px; color:#1A1A1A }
+    .panel{ padding: 0 18px 16px 18px; color:#1A1A1A }
     .panel p{ margin: 10px 0 }
 
-    /* Кнопка "Перейти" — ТІЛЬКИ кнопка, БЕЗ іконок усередині */
+    /* КНОПКА — лише кнопка, без іконок */
     .actions{ display:none; margin-top:12px }
     details[open] .actions{ display:block }
     .btn{
       appearance:none; border:1px solid var(--ua-blue-strong); background: var(--ua-blue-strong);
       color:#fff; padding:14px 18px; border-radius:14px; font-weight:800; cursor:pointer;
       transition: transform .12s ease, background-color .2s ease, border-color .2s ease;
-      text-align:center; display:block; width:100%; line-height:1; touch-action:manipulation;
+      text-align:center; display:inline-block; width:auto; line-height:1; touch-action:manipulation;
     }
     @media (hover:hover){ .btn:hover{ transform: translateY(-1px) } }
     .btn:active{ transform: translateY(0) scale(.99) }
     .btn:focus-visible{ outline:3px solid #d7c25a; outline-offset:3px }
 
-    /* ====== Декорації ====== */
+    /* ========= ДЕКОРАЦІЇ ========= */
     .blob{ position:absolute; filter: blur(44px); opacity:.55; pointer-events:none }
     .blob--blue{ width:420px; height:280px; right:-100px; top:-60px; background: radial-gradient(60% 60% at 60% 40%, var(--sky), transparent 65%) }
     .blob--yellow{ width:380px; height:260px; left:-90px; top:120px; background: radial-gradient(60% 60% at 40% 60%, var(--ua-yellow-2), transparent 65%) }
 
-    /* ====== A11y ====== */
-    .visually-hidden{ position:absolute!important; clip:rect(1px,1px,1px,1px); clip-path:inset(50%); height:1px;width:1px; overflow:hidden; white-space:nowrap; border:0; padding:0; margin:-1px }
-    @media (prefers-reduced-motion: reduce){
-      .card, .btn, details, summary, .chev{ transition:none !important }
+    /* ========= МОБІЛЬНА АДАПТАЦІЯ (≤760px): максимум уваги мобайлу, але розміри фото лишаються 16:9 ========= */
+    @media (max-width: 760px){
+      .wrap{ padding: clamp(12px, 4vw, 18px) }
+      .gallery-desktop{ display:none }        /* приховуємо п'єдестал */
+      .gallery-mobile{ display:block }        /* показуємо вертикальний список */
+      summary{ padding: 14px 14px }
+      .panel{ padding: 0 14px 14px 14px }
+      .btn{ width:100%; border-radius:14px }
     }
+
+    /* ========= A11y ========= */
+    .visually-hidden{ position:absolute!important; clip:rect(1px,1px,1px,1px); clip-path:inset(50%); height:1px;width:1px; overflow:hidden; white-space:nowrap; border:0; padding:0; margin:-1px }
+    @media (prefers-reduced-motion: reduce){ .card, .btn, details, summary, .chev{ transition:none !important } .card:hover, .btn:hover{ transform:none } }
   </style>
 </head>
 <body>
@@ -210,25 +214,40 @@
       <div class="muted" aria-hidden="true"></div>
     </header>
 
-    <!-- ===== МОБІЛЬНА ГАЛЕРЕЯ (1 колонка, однакова висота карток) ===== -->
-    <section class="gallery" aria-label="Три головні напрямки">
-      <div class="cards">
-        <!-- Династія -->
-        <a class="card" href="#dyn" aria-label="Перейти: Династія Слободенюк">
-          <img class="media" id="hero-dynastia" src="assets/img/dynastia.png" alt="Династія Слободенюк — прев'ю" loading="eager" decoding="async" fetchpriority="high" />
+    <!-- ===== DESKTOP галерея (п'єдестал) ===== -->
+    <section class="gallery-desktop" aria-label="Три головні напрямки (desktop)">
+      <a class="card" href="#dyn" aria-label="Перейти: Династія Слободенюк">
+        <!-- ВЕРТИКАЛЬНЕ фото «Династія» поміщене в 16:9 прямокутник -->
+        <img class="media media--contain" src="assets/img/dynastia.png" alt="Династія Слободенюк — прев'ю" loading="eager" decoding="async" fetchpriority="high" />
+        <span class="frame" aria-hidden="true"></span>
+        <span class="label">Династія Слободенюк</span>
+      </a>
+      <a class="card" href="#svit" aria-label="Перейти: БО &quot;БФ Світогляд&quot;">
+        <img class="media" src="assets/img/svitoglyad.png" alt="БО &quot;БФ Світогляд&quot; — прев'ю" loading="lazy" decoding="async" />
+        <span class="frame" aria-hidden="true"></span>
+        <span class="label">БО "БФ Світогляд"</span>
+      </a>
+      <a class="card" href="#craft" aria-label="Перейти: Крафторіум">
+        <img class="media" src="assets/img/craftorium.png" alt="Крафторіум — прев'ю" loading="lazy" decoding="async" />
+        <span class="frame" aria-hidden="true"></span>
+        <span class="label">Крафторіум</span>
+      </a>
+    </section>
+
+    <!-- ===== MOBILE галерея: вертикальний список, ті ж розміри 16:9 ===== -->
+    <section class="gallery-mobile" aria-label="Три напрямки — мобільне компонування">
+      <div class="gallery-mobile__rail">
+        <a class="card" href="#dyn" aria-label="Перейти: Династія Слободенюк (мобільна)">
+          <img class="media media--contain" src="assets/img/dynastia.png" alt="Династія Слободенюк — прев'ю" loading="eager" decoding="async" fetchpriority="high" />
           <span class="frame" aria-hidden="true"></span>
           <span class="label">Династія Слободенюк</span>
         </a>
-
-        <!-- Світогляд -->
-        <a class="card" href="#svit" aria-label="Перейти: БО &quot;БФ Світогляд&quot;">
+        <a class="card" href="#svit" aria-label="Перейти: БО &quot;БФ Світогляд&quot; (мобільна)">
           <img class="media" src="assets/img/svitoglyad.png" alt="БО &quot;БФ Світогляд&quot; — прев'ю" loading="lazy" decoding="async" />
           <span class="frame" aria-hidden="true"></span>
           <span class="label">БО "БФ Світогляд"</span>
         </a>
-
-        <!-- Крафторіум -->
-        <a class="card" href="#craft" aria-label="Перейти: Крафторіум">
+        <a class="card" href="#craft" aria-label="Перейти: Крафторіум (мобільна)">
           <img class="media" src="assets/img/craftorium.png" alt="Крафторіум — прев'ю" loading="lazy" decoding="async" />
           <span class="frame" aria-hidden="true"></span>
           <span class="label">Крафторіум</span>
@@ -236,7 +255,7 @@
       </div>
     </section>
 
-    <!-- ===== АКОРДЕОНИ (іконки = PNG кнопок) ===== -->
+    <!-- ===== 3 АКОРДЕОНИ (іконка = PNG кнопки; кнопка «Перейти» — лише текст) ===== -->
     <section class="accordion" aria-label="Детальна інформація">
       <!-- Dynastia -->
       <details id="dyn">
@@ -296,13 +315,13 @@
       </details>
     </section>
 
-    <footer class="muted" style="border-top:1px solid var(--line); padding-top:10px; margin-top:6px">
-      Мобільна версія: max-width 375px, однакова висота карток за висотою «Династії», PNG-іконки у заголовках, фон збережено.
+    <footer class="muted" style="border-top:1px solid var(--line); padding-top:14px; margin-top:10px">
+      Desktop + Mobile: фото 16:9 як у базовій версії; «Династія» без обрізання в тій самій рамці; PNG-іконки в заголовках; кнопка «Перейти» без іконок; фон збережено.
     </footer>
   </div>
 
   <script>
-    // 1) Відкривати потрібний акордеон, якщо прийшли з якорем
+    // Автовідкриття акордеона за якорем (клік із галереї)
     (function(){
       if(location.hash){
         const el = document.querySelector(location.hash);
@@ -313,7 +332,7 @@
       }
     })();
 
-    // 2) A11y: aria-expanded + тільки один відкритий акордеон
+    // A11y: aria-expanded + режим «один відкритий»
     (function(){
       const items = document.querySelectorAll('.accordion details');
       items.forEach(dtl => {
@@ -329,38 +348,12 @@
       });
     })();
 
-    // 3) ЄДИНА ВИСОТА КАРТОК = висота зображення "Династія" при поточній ширині
+    // Легка оптимізація: позначаємо картинки, коли завантажились (для потенц. ефектів/CLS)
     (function(){
-      const dyn = document.getElementById('hero-dynastia');
-      const setHeight = () => {
-        try{
-          const containerWidth = dyn.closest('.card').clientWidth || dyn.clientWidth || 0;
-          const naturalW = dyn.naturalWidth || 0;
-          const naturalH = dyn.naturalHeight || 0;
-
-          // якщо дані є — рахуємо висоту за аспектом "Династії"
-          if(containerWidth && naturalW && naturalH){
-            const h = Math.round(containerWidth * (naturalH / naturalW));
-            document.documentElement.style.setProperty('--card-h', h + 'px');
-          }else{
-            // фолбек на випадок, якщо ще не завантажилось
-            document.documentElement.style.setProperty('--card-h', '320px');
-          }
-        }catch(e){
-          document.documentElement.style.setProperty('--card-h', '320px');
-        }
-      };
-
-      if(dyn){
-        if(dyn.complete) setHeight();
-        else dyn.addEventListener('load', setHeight, { once:true });
-
-        // Перерахунок при зміні розміру/орієнтації
-        let t;
-        const onResize = () => { clearTimeout(t); t = setTimeout(setHeight, 120); };
-        window.addEventListener('resize', onResize);
-        window.addEventListener('orientationchange', onResize);
-      }
+      document.querySelectorAll('img.media').forEach(img=>{
+        if(img.complete){ img.classList.add('is-ready'); }
+        else{ img.addEventListener('load', ()=> img.classList.add('is-ready'), { once:true }); }
+      });
     })();
   </script>
 </body>
