@@ -51,7 +51,7 @@
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
       -webkit-tap-highlight-color:transparent;
       -webkit-text-size-adjust:100%;
-      overscroll-beavior-x:none;
+      overscroll-behavior-x:none;
     }
     a{ color:inherit; text-decoration:none }
     img{ display:block; max-width:100%; height:auto }
@@ -129,6 +129,7 @@
       border:1px solid var(--line); border-radius:12px; padding:8px 12px; font-weight:800;
       backdrop-filter: blur(10px) saturate(140%); box-shadow: 0 6px 20px rgba(0,0,0,.10);
       font-size: clamp(13px, .95vw + 10px, 15px);
+      transition: opacity .25s ease; /* щоб підпис коректно ховався на мобільному при фліпі */
     }
 
     /* ========= ФЛІП МЕХАНІКА ДЛЯ ГАЛЕРЕЇ ========= */
@@ -149,6 +150,11 @@
       display:grid; place-items:center; padding:16px;
     }
     .card.is-flipped .card__inner{ transform: rotateY(180deg) }
+
+    /* FIX: підпис/рамка/зображення на фронті гарантовано ховаються на мобільному при фліпі */
+    .card.is-flipped .card__front .label,
+    .card.is-flipped .card__front .frame,
+    .card.is-flipped .card__front .media{ opacity:0 }
 
     .back-content{
       display:grid; gap:12px; place-items:center; text-align:center; width:100%;
@@ -387,7 +393,7 @@
           <svg class="chev" viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
         </summary>
         <div class="panel">
-          <p><strong>Опис:</strong> коротко про напрям, діяльність та місію. Тут з’явиться розширений текст, фото й посилання.</p>
+          <p>Знайдете опис, актуальні ініціативи, результати та звітність, а також контакти для співпраці. Натисніть «Перейти», щоб дізнатися більше або долучитися.</p>
           <div class="actions">
             <a class="btn" href="https://t.me/ibbclub_bot?start=member_88775748" target="_blank" rel="noopener noreferrer" role="button" aria-label="Перейти до розділу «Династія Слободенюк»">Перейти</a>
           </div>
@@ -406,7 +412,7 @@
           <svg class="chev" viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
         </summary>
         <div class="panel">
-          <p><strong>Благодійний фонд:</strong> коротко про напрямки допомоги, географію, звітність та реквізити.</p>
+          <p>Знайдете опис, актуальні ініціативи, результати та звітність, а також контакти для співпраці. Натисніть «Перейти», щоб дізнатися більше або долучитися.</p>
           <div class="actions">
             <a class="btn" href="https://ibbclub.org/project/382/" target="_blank" rel="noopener noreferrer" role="button" aria-label="Перейти до розділу «Світогляд»">Перейти</a>
           </div>
@@ -425,7 +431,7 @@
           <svg class="chev" viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
         </summary>
         <div class="panel">
-          <p><strong>Творча майстерня:</strong> вироби, формати навчання, воркшопи, колаборації. Додамо галерею та CTA пізніше.</p>
+          <p>Знайдете опис, актуальні ініціативи, результати та звітність, а також контакти для співпраці. Натисніть «Перейти», щоб дізнатися більше або долучитися.</p>
           <div class="actions">
             <a class="btn" href="https://t.me/ibbclub_bot?start=604016391" target="_blank" rel="noopener noreferrer" role="button" aria-label="Перейти до розділу «Крафторіум»">Перейти</a>
           </div>
@@ -449,7 +455,7 @@
       }
     })();
 
-    // A11y: aria-expanded + режим «один відкритий»
+    // A11y: aria-expanded для summary; БЕЗ закриття інших details (можна відкривати декілька одночасно)
     (function(){
       const items = document.querySelectorAll('.accordion details');
       items.forEach(dtl => {
@@ -459,7 +465,7 @@
           sum.setAttribute('aria-expanded', dtl.hasAttribute('open') ? 'true' : 'false');
           dtl.addEventListener('toggle', () => {
             sum.setAttribute('aria-expanded', dtl.open ? 'true' : 'false');
-            if(dtl.open){ items.forEach(o => { if(o!==dtl) o.removeAttribute('open'); }); }
+            /* Раніше тут закривали інші — видалено за вимогою */
           });
         }
       });
@@ -496,9 +502,6 @@
           }
         });
       });
-
-      // Клік поза кнопкою на ЗВОРОТІ також фліпить назад — уже покрито handler'ом вище
-      // Додатково: якщо користувач натиснув на саму кнопку — не фліпимо (handled via closest('.btn'))
     })();
   </script>
 </body>
