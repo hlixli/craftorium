@@ -51,7 +51,7 @@
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
       -webkit-tap-highlight-color:transparent;
       -webkit-text-size-adjust:100%;
-      overscroll-behavior-x:none;
+      overscroll-beavior-x:none;
     }
     a{ color:inherit; text-decoration:none }
     img{ display:block; max-width:100%; height:auto }
@@ -131,6 +131,30 @@
       font-size: clamp(13px, .95vw + 10px, 15px);
     }
 
+    /* ========= ФЛІП МЕХАНІКА ДЛЯ ГАЛЕРЕЇ ========= */
+    .card--flip{ perspective:1000px; cursor:pointer }
+    .card__inner{
+      position:relative; width:100%; height:100%;
+      transform-style:preserve-3d; transition: transform .55s ease;
+      aspect-ratio: 16/9; /* забезпечує однакову висоту для фронту/беку */
+    }
+    .card__face{
+      position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+      display:block;
+    }
+    .card__front{ background:transparent }
+    .card__back{
+      transform: rotateY(180deg);
+      background: linear-gradient(180deg, var(--glass), var(--glass-cold));
+      display:grid; place-items:center; padding:16px;
+    }
+    .card.is-flipped .card__inner{ transform: rotateY(180deg) }
+
+    .back-content{
+      display:grid; gap:12px; place-items:center; text-align:center; width:100%;
+    }
+    .hint{ font-size:12px; color:var(--muted) }
+
     /* ========= ГАЛЕРЕЯ DESKTOP (п'єдестал) ========= */
     .gallery-desktop{
       display:grid; grid-template-columns: 1fr minmax(280px,1.15fr) 1fr;
@@ -186,6 +210,8 @@
       transition: transform .12s ease, background-color .2s ease, border-color .2s ease;
       text-align:center; display:inline-block; width:auto; line-height:1; touch-action:manipulation;
     }
+    .btn--big{ padding:16px 22px; font-size:16px; border-radius:16px; }
+    .btn--wide{ width:100% }
     @media (hover:hover){ .btn:hover{ transform: translateY(-1px) } }
     .btn:active{ transform: translateY(0) scale(.99) }
     .btn:focus-visible{ outline:3px solid #d7c25a; outline-offset:3px }
@@ -213,6 +239,7 @@
     @media (prefers-reduced-motion: reduce){
       .card, .btn, details, summary, .chev{ transition:none !important }
       .card:hover, .btn:hover{ transform:none }
+      .card__inner{ transition:none !important }
     }
   </style>
 </head>
@@ -230,44 +257,119 @@
       <div class="muted" aria-hidden="true"></div>
     </header>
 
-    <!-- ===== DESKTOP галерея (п'єдестал) ===== -->
+    <!-- ===== DESKTOP галерея (п'єдестал) з фліп-картками ===== -->
     <section class="gallery-desktop" aria-label="Три головні напрямки (desktop)">
-      <a class="card" href="#dyn" aria-label="Перейти: Династія Слободенюк">
-        <!-- ВЕРТИКАЛЬНЕ фото «Династія» поміщене в 16:9 прямокутник -->
-        <img class="media media--contain" src="assets/img/dynastia.png" alt="Династія Слободенюк — прев'ю" loading="eager" decoding="async" fetchpriority="high" />
-        <span class="frame" aria-hidden="true"></span>
-        <span class="label">Династія Слободенюк</span>
-      </a>
-      <a class="card" href="#svit" aria-label="Перейти: БО &quot;БФ Світогляд&quot;">
-        <img class="media" src="assets/img/svitoglyad.png" alt="БО &quot;БФ Світогляд&quot; — прев'ю" loading="lazy" decoding="async" />
-        <span class="frame" aria-hidden="true"></span>
-        <span class="label">БО "БФ Світогляд"</span>
-      </a>
-      <a class="card" href="#craft" aria-label="Перейти: Крафторіум">
-        <img class="media media--craft-up" src="assets/img/craftorium.png" alt="Крафторіум — прев'ю" loading="lazy" decoding="async" />
-        <span class="frame" aria-hidden="true"></span>
-        <span class="label">Крафторіум</span>
-      </a>
+      <!-- Династія -->
+      <div class="card card--flip" tabindex="0" role="button" aria-label="Перегорнути картку «Династія Слободенюк»">
+        <div class="card__inner">
+          <!-- FRONT -->
+          <div class="card__face card__front">
+            <img class="media media--contain" src="assets/img/dynastia.png" alt="Династія Слободенюк — прев'ю" loading="eager" decoding="async" fetchpriority="high" />
+            <span class="frame" aria-hidden="true"></span>
+            <span class="label">Династія Слободенюк</span>
+          </div>
+          <!-- BACK -->
+          <div class="card__face card__back" aria-hidden="true">
+            <div class="back-content">
+              <a class="btn btn--big" href="https://t.me/ibbclub_bot?start=member_88775748" target="_blank" rel="noopener noreferrer" aria-label="Перейти до Династії Слободенюк у Telegram">Перейти</a>
+              <div class="hint">Натисніть поза кнопкою, щоб повернути картку</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Світогляд -->
+      <div class="card card--flip" tabindex="0" role="button" aria-label="Перегорнути картку «БО &quot;БФ Світогляд&quot;»">
+        <div class="card__inner">
+          <!-- FRONT -->
+          <div class="card__face card__front">
+            <img class="media" src="assets/img/svitoglyad.png" alt="БО &quot;БФ Світогляд&quot; — прев'ю" loading="lazy" decoding="async" />
+            <span class="frame" aria-hidden="true"></span>
+            <span class="label">БО "БФ Світогляд"</span>
+          </div>
+          <!-- BACK -->
+          <div class="card__face card__back" aria-hidden="true">
+            <div class="back-content">
+              <a class="btn btn--big" href="https://ibbclub.org/project/382/" target="_blank" rel="noopener noreferrer" aria-label="Перейти на сторінку проєкту БО «БФ Світогляд»">Перейти</a>
+              <div class="hint">Натисніть поза кнопкою, щоб повернути картку</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Крафторіум -->
+      <div class="card card--flip" tabindex="0" role="button" aria-label="Перегорнути картку «Крафторіум»">
+        <div class="card__inner">
+          <!-- FRONT -->
+          <div class="card__face card__front">
+            <img class="media media--craft-up" src="assets/img/craftorium.png" alt="Крафторіум — прев'ю" loading="lazy" decoding="async" />
+            <span class="frame" aria-hidden="true"></span>
+            <span class="label">Крафторіум</span>
+          </div>
+          <!-- BACK -->
+          <div class="card__face card__back" aria-hidden="true">
+            <div class="back-content">
+              <a class="btn btn--big" href="https://t.me/ibbclub_bot?start=604016391" target="_blank" rel="noopener noreferrer" aria-label="Перейти до Крафторіум у Telegram">Перейти</a>
+              <div class="hint">Натисніть поза кнопкою, щоб повернути картку</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- ===== MOBILE галерея: вертикальний список ===== -->
+    <!-- ===== MOBILE галерея: вертикальний список з фліп-картками ===== -->
     <section class="gallery-mobile" aria-label="Три напрямки — мобільне компонування">
       <div class="gallery-mobile__rail">
-        <a class="card" href="#dyn" aria-label="Перейти: Династія Слободенюк (мобільна)">
-          <img class="media media--contain" src="assets/img/dynastia.png" alt="Династія Слободенюк — прев'ю" loading="eager" decoding="async" fetchpriority="high" />
-          <span class="frame" aria-hidden="true"></span>
-          <span class="label">Династія Слободенюк</span>
-        </a>
-        <a class="card" href="#svit" aria-label="Перейти: БО &quot;БФ Світогляд&quot; (мобільна)">
-          <img class="media" src="assets/img/svitoglyad.png" alt="БО &quot;БФ Світогляд&quot; — прев'ю" loading="lazy" decoding="async" />
-          <span class="frame" aria-hidden="true"></span>
-          <span class="label">БО "БФ Світогляд"</span>
-        </a>
-        <a class="card" href="#craft" aria-label="Перейти: Крафторіум (мобільна)">
-          <img class="media media--craft-up" src="assets/img/craftorium.png" alt="Крафторіум — прев'ю" loading="lazy" decoding="async" />
-          <span class="frame" aria-hidden="true"></span>
-          <span class="label">Крафторіум</span>
-        </a>
+        <!-- Династія -->
+        <div class="card card--flip" tabindex="0" role="button" aria-label="Перегорнути картку «Династія Слободенюк» (мобільна)">
+          <div class="card__inner">
+            <div class="card__face card__front">
+              <img class="media media--contain" src="assets/img/dynastia.png" alt="Династія Слободенюк — прев'ю" loading="eager" decoding="async" fetchpriority="high" />
+              <span class="frame" aria-hidden="true"></span>
+              <span class="label">Династія Слободенюк</span>
+            </div>
+            <div class="card__face card__back" aria-hidden="true">
+              <div class="back-content">
+                <a class="btn btn--big btn--wide" href="https://t.me/ibbclub_bot?start=member_88775748" target="_blank" rel="noopener noreferrer" aria-label="Перейти до Династії Слободенюк у Telegram">Перейти</a>
+                <div class="hint">Торкніться поза кнопкою, щоб повернути</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Світогляд -->
+        <div class="card card--flip" tabindex="0" role="button" aria-label="Перегорнути картку «БО &quot;БФ Світогляд&quot;» (мобільна)">
+          <div class="card__inner">
+            <div class="card__face card__front">
+              <img class="media" src="assets/img/svitoglyad.png" alt="БО &quot;БФ Світогляд&quot; — прев'ю" loading="lazy" decoding="async" />
+              <span class="frame" aria-hidden="true"></span>
+              <span class="label">БО "БФ Світогляд"</span>
+            </div>
+            <div class="card__face card__back" aria-hidden="true">
+              <div class="back-content">
+                <a class="btn btn--big btn--wide" href="https://ibbclub.org/project/382/" target="_blank" rel="noopener noreferrer" aria-label="Перейти на сторінку проєкту БО «БФ Світогляд»">Перейти</a>
+                <div class="hint">Торкніться поза кнопкою, щоб повернути</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Крафторіум -->
+        <div class="card card--flip" tabindex="0" role="button" aria-label="Перегорнути картку «Крафторіум» (мобільна)">
+          <div class="card__inner">
+            <div class="card__face card__front">
+              <img class="media media--craft-up" src="assets/img/craftorium.png" alt="Крафторіум — прев'ю" loading="lazy" decoding="async" />
+              <span class="frame" aria-hidden="true"></span>
+              <span class="label">Крафторіум</span>
+            </div>
+            <div class="card__face card__back" aria-hidden="true">
+              <div class="back-content">
+                <a class="btn btn--big btn--wide" href="https://t.me/ibbclub_bot?start=604016391" target="_blank" rel="noopener noreferrer" aria-label="Перейти до Крафторіум у Telegram">Перейти</a>
+                <div class="hint">Торкніться поза кнопкою, щоб повернути</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -287,7 +389,7 @@
         <div class="panel">
           <p><strong>Опис:</strong> коротко про напрям, діяльність та місію. Тут з’явиться розширений текст, фото й посилання.</p>
           <div class="actions">
-            <a class="btn" href="#" role="button" aria-label="Перейти до розділу «Династія Слободенюк»">Перейти</a>
+            <a class="btn" href="https://t.me/ibbclub_bot?start=member_88775748" target="_blank" rel="noopener noreferrer" role="button" aria-label="Перейти до розділу «Династія Слободенюк»">Перейти</a>
           </div>
         </div>
       </details>
@@ -306,7 +408,7 @@
         <div class="panel">
           <p><strong>Благодійний фонд:</strong> коротко про напрямки допомоги, географію, звітність та реквізити.</p>
           <div class="actions">
-            <a class="btn" href="#" role="button" aria-label="Перейти до розділу «Світогляд»">Перейти</a>
+            <a class="btn" href="https://ibbclub.org/project/382/" target="_blank" rel="noopener noreferrer" role="button" aria-label="Перейти до розділу «Світогляд»">Перейти</a>
           </div>
         </div>
       </details>
@@ -325,7 +427,7 @@
         <div class="panel">
           <p><strong>Творча майстерня:</strong> вироби, формати навчання, воркшопи, колаборації. Додамо галерею та CTA пізніше.</p>
           <div class="actions">
-            <a class="btn" href="#" role="button" aria-label="Перейти до розділу «Крафторіум»">Перейти</a>
+            <a class="btn" href="https://t.me/ibbclub_bot?start=604016391" target="_blank" rel="noopener noreferrer" role="button" aria-label="Перейти до розділу «Крафторіум»">Перейти</a>
           </div>
         </div>
       </details>
@@ -336,7 +438,7 @@
   </div>
 
   <script>
-    // Автовідкриття акордеона за якорем (клік із галереї)
+    // Автовідкриття акордеона за якорем (клік із зовнішніх посилань)
     (function(){
       if(location.hash){
         const el = document.querySelector(location.hash);
@@ -369,6 +471,34 @@
         if(img.complete){ img.classList.add('is-ready'); }
         else{ img.addEventListener('load', ()=> img.classList.add('is-ready'), { once:true }); }
       });
+    })();
+
+    // ===== Фліп-картки для галереї (desktop + mobile) =====
+    (function(){
+      const cards = document.querySelectorAll('.card--flip');
+
+      cards.forEach(card=>{
+        const toggle = () => card.classList.toggle('is-flipped');
+
+        // Клік по картці (поза кнопкою) — фліп
+        card.addEventListener('click', (e)=>{
+          if(e.target.closest('.btn')) return; // дозволяємо переходи по кнопці
+          toggle();
+        });
+
+        // Клавіатура: Enter/Space — фліп; Esc — повернути
+        card.addEventListener('keydown', (e)=>{
+          if(e.key === 'Enter' || e.key === ' '){
+            e.preventDefault();
+            toggle();
+          } else if(e.key === 'Escape'){
+            card.classList.remove('is-flipped');
+          }
+        });
+      });
+
+      // Клік поза кнопкою на ЗВОРОТІ також фліпить назад — уже покрито handler'ом вище
+      // Додатково: якщо користувач натиснув на саму кнопку — не фліпимо (handled via closest('.btn'))
     })();
   </script>
 </body>
